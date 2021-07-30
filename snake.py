@@ -92,9 +92,6 @@ while key!=ESC:
         win.addch(last[0],last[1], " ") #Replace tail coord with a space " "
     
     win.addch(snake[0][0], snake[0][1], "*") #Coordinates of the Snake on the Screen. Snake represented by "*"
-    
-    
-    
 
     win.addch(food[0], food[1], "#")
 curses.endwin() #End window session
