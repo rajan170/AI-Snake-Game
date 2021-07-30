@@ -1,5 +1,5 @@
 import curses
-
+from random import randint
 #Initialize Screen
 curses.initscr()
 
@@ -12,7 +12,7 @@ win=curses.newwin(20,60,0,0)
 #Use arrow keys
 win.keypad(1)             
 
-#Don't listen to other input characters and print
+#Don't listen to other input characters and print nothing else
 curses.noecho()           
 
 #Cursor Visibility (Toggle- 0 or 1)
@@ -32,11 +32,11 @@ food=(10,20)
 #Coordinates of Food, Represented by the symbol '#'
 win.addch(food[0],food[1],"#")
 
-#Game Logic
+############################################## Game Logic ########################################################
 score=0
 
 ESC=27
-key= curses.KET_RIGHT
+key= curses.KEY_RIGHT
 arrow_keys=[curses.KEY_LEFT, curses.KEY_RIGHT, curses.KEY_UP, curses.KEY_DOWN, ESC]
 
 while key!=ESC: 
@@ -62,7 +62,9 @@ while key!=ESC:
     if key==curses.KEY_RIGHT:
         x += 1
 
-    snake.append(0, (y,x)) #Use .append instead of .insert as Append is faster O(1) and Insert takes O(n) because it has to shift everything to the right
+    snake.insert(0, (y,x)) # .append is preffered over .insert,  
+    # as Append is faster O(1) and Insert takes O(n) because it has to shift everything to the right.
+    # But insert is used for because we it does not make any real difference here.
 
     #Check if we it the border(0) or the last row(19) or column(59)
     if y==0: break
@@ -78,11 +80,22 @@ while key!=ESC:
     if snake[0] == food:
         score+=1
         #create new food at new loc
-        food= ()
+        food= () #food init to empty tuple
+        while food== ():
+            food=(randint(1,18), randint(1,58)) #Area where new food can appear
+            if food in snake:
+                food= ()
+        win.addch(food[0], food[1], "#") #If the food in not in snake, then add new food
+    else:
+        #Move snake by moving the last coord/tail
+        last=snake.pop()
+        win.addch(last[0],last[1], " ") #Replace tail coord with a space " "
+    
+    win.addch(snake[0][0], snake[0][1], "*") #Coordinates of the Snake on the Screen. Snake represented by "*"
+    
+    
+    
 
-
-    for c in snake:
-        win.addch(c[0],c[1], "*")    #Coordinates of the Snake on the Screen. Snake represented by "*"
-
+    win.addch(food[0], food[1], "#")
 curses.endwin() #End window session
 print(f"Final Score:{score}")
